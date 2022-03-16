@@ -1,0 +1,31 @@
+version: '3.1'
+services:
+  Backend: # backend express container
+    container_name: backend
+    restart: always
+    Build:. / # specify the setting context root directory, and then specify dockerfile based on this directory
+#    networks:
+#      - myweb
+    Ports: # mapping ports
+      - 3001:3001
+    Command: "NPM start" # execute the command after the container is created
+
+  Frontend: # front end container (running frontend project in nginx)
+    container_name: frontend
+    image: nginx
+    restart: always
+    volumes:
+      -. / nginx. Conf: / etc / nginx / nginx.conf # mount nginx configuration
+      -. / frontend / dist: / usr / share / nginx / HTML / # mount project
+#    networks:
+#      - myweb
+
+    ports:
+      -80:80 # mapping port
+
+    depends_ On: # depends on the API container. This web container can only be started after the dependent container is started
+      - backend
+
+# networks:
+#  myweb:
+#    driver: bridge
